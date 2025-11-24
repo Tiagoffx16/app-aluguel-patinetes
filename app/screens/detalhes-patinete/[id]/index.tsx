@@ -12,6 +12,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import patinetesData from '@/data/patinetes.json';
 
+
 const StyledView = View;
 const StyledText = Text;
 const StyledTouchableOpacity = TouchableOpacity;
