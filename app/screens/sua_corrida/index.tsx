@@ -1,7 +1,31 @@
+import { useRentalNotifications } from "@/hooks/useRentalNotifications";
+import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function SuaCorrida() {
+  // Mock de ID de corrida e duração
+  // Em uma aplicação real, esses valores viriam de um contexto/estado global ou rota params
+  const rentalId = "rental-001";
+  const durationInMinutes = 30; // Exemplo: 30 minutos de aluguel
+
+  // Callbacks para quando notificações são recebidas ou pressionadas
+  const handleNotificationReceived = (notification: Notifications.Notification) => {
+    console.log("Notificação recebida:", notification);
+  };
+
+  const handleNotificationPressed = (response: Notifications.NotificationResponse) => {
+    console.log("Notificação pressionada:", response);
+  };
+
+  // Usar o hook para gerenciar notificações de aluguel
+  useRentalNotifications(
+    rentalId,
+    durationInMinutes,
+    handleNotificationReceived,
+    handleNotificationPressed
+  );
+
   return (
     <View className="flex-1 bg-gray-50 px-4 pt-14">
 

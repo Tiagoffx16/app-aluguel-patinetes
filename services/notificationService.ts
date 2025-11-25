@@ -1,6 +1,8 @@
 import * as Device from 'expo-device';
+import * as Haptics from 'expo-haptics';
 import * as Notifications from 'expo-notifications';
 import { RentalNotification } from '../types/notifications';
+import { getNotificationSettings } from './notificationSettingsService';
 
 // Configurar comportamento das notificações
 Notifications.setNotificationHandler({
@@ -48,6 +50,15 @@ export class NotificationService {
     notification: RentalNotification
   ): Promise<string | null> {
     try {
+      // Verificar configurações do usuário
+      const settings = await getNotificationSettings();
+      
+      // Se notificações estão desabilitadas, não enviar
+      if (!settings.enableNotifications) {
+        console.log('Notificações desabilitadas pelo usuário');
+        return null;
+      }
+
       const notificationId = await Notifications.scheduleNotificationAsync({
         content: {
           title: notification.title,
@@ -56,11 +67,20 @@ export class NotificationService {
             type: notification.type,
             timeRemaining: notification.timeRemaining,
           },
-          sound: 'default',
+          sound: settings.enableSoundNotifications ? 'default' : undefined,
           badge: 1,
         },
         trigger: null, // enviar imediatamente
       });
+
+      // Aplicar vibração se habilitado
+      if (settings.enableVibration) {
+        try {
+          await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        } catch (error) {
+          console.error('Erro ao vibrar:', error);
+        }
+      }
 
       return notificationId;
     } catch (error) {
